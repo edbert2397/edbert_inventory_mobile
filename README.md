@@ -203,3 +203,58 @@ class ShopCard extends StatelessWidget {
 `ShopCard` seperti sebuah button yang teredapat 3 pilihan menu kita, yaitu "Lihat Item", "Tambah Item", dan "Logout". `onTap` adalah fungsi yang akan dijalankan ketika button tersebut ditekan, yaitu membuat sebuah notifikasi "Kamu telah menekan tombol X" dimana X adalah button yang ditekan.
 
 Saya juga menambahkan color pada ShopItem agar setiap ShopItem dapat menyimpan color nya masing-masing.
+
+# Tugas 8
+
+## Pertanyaan 
+
+### 1. Jelaskan perbedaan antara Navigator.push() dan Navigator.pushReplacement()
+
+Navigator.push():
+Fungsinya adalah untuk menambahkan rute baru ke tumpukan navigator.
+Saat menggunakan Navigator.push(), halaman baru ditumpuk di atas halaman sebelumnya.
+Halaman sebelumnya tetap ada di bawah halaman baru, dan pengguna dapat kembali ke halaman sebelumnya dengan tombol back atau gestur navigasi.
+contoh penerapan : aplikasi dengan dua halaman: Halaman Utama dan Halaman Detail. Ketika pengguna mengeklik item di Halaman Utama, kita ingin membawanya ke Halaman Detail tanpa menghilangkan Halaman Utama dari tumpukan navigasi.
+
+Navigator.pushReplacement():
+
+Fungsinya adalah menggantikan rute saat ini dengan rute baru di tumpukan navigator.
+Saat menggunakan Navigator.pushReplacement(), halaman saat ini dihapus dari tumpukan dan digantikan dengan halaman baru.
+Pengguna tidak dapat kembali ke halaman sebelumnya karena sudah digantikan.
+contoh penerapan: Dalam kasus alur login, setelah pengguna berhasil masuk, kita ingin membawanya ke Halaman Utama dan menghapus Halaman Login dari tumpukan navigasi.
+
+### 2. Jelaskan masing-masing layout widget pada Flutter dan konteks penggunaannya 
+
+1.Container:
+Container adalah kotak dekoratif yang dapat dikonfigurasi untuk menentukan dimensi, padding, margin, dan latar belakang.
+Penggunaan: Cocok untuk membuat widget dengan dekorasi khusus, seperti warna latar belakang, border, atau shadow.
+
+2.Column dan Row:
+Column mengatur childnya secara vertikal, sedangkan Row mengaturnya secara horizontal.
+Penggunaan: Ideal untuk membuat layout linier, seperti list item.
+
+3.GridView:
+GridView menyusun widget dalam grid dua dimensi.
+Penggunaan: Baik untuk menampilkan data dalam format grid.
+
+4.ListView:
+ListView menyusun widget secara linier pada sumbu vertikal atau horizontal.
+Penggunaan: Cocok untuk daftar yang dapat scroll.
+
+5.Padding:
+Padding menambahkan ruang kosong di sekitar widget lain.
+Penggunaan: Digunakan untuk memberikan ruang tambahan di dalam atau di sekitar widget.
+
+6.Align dan Center:
+Align mengontrol posisi anak di dalam dirinya, sedangkan Center adalah versi khusus dari Align yang menempatkan anaknya di tengah.
+Penggunaan: Berguna untuk mengontrol posisi spesifik widget dalam kontainer yang lebih besar.
+
+7.Table:
+Table menampilkan widget dalam format tabel dengan baris dan kolom.
+Penggunaan: Berguna untuk data yang terstruktur seperti tabel.
+
+### 3. Elemen input pada form yang kamu pakai pada tugas kali ini dan jelaskan 
+TextFormField, Elemen ini digunakan untuk mengumpulkan input nama item,harga, dan deskripsi dari user. TextFormField juga memungkinkan validasi input (misalnya, memastikan bahwa nama tidak kosong) dan penyesuaian input teks (seperti hint dan label) sehingga sangat cocok untuk input teks sederhana.
+
+### 4. penerapan clean architecture pada aplikasi Flutter
+Penerapan Clean Architecture pada aplikasi Flutter melibatkan pemisahan kode menjadi bagian yang berbeda dengan tanggung jawab yang terpisah. Arsitektur ini bertujuan untuk menghasilkan kode yang mudah dipelihara.
