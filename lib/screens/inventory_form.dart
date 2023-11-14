@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:inventory/data.dart';
 import 'package:inventory/widgets/left_drawer.dart';
-
 class InventoryFormPage extends StatefulWidget {
   const InventoryFormPage({super.key});
 
@@ -116,6 +116,7 @@ class _InventoryFormPageState extends State<InventoryFormPage> {
                     ),
                     onPressed: () {
                       if(_formKey.currentState!.validate()){
+                        Data.objects.add(Data(_name,_price,_description));
                         showDialog(
                           context: context,
                           builder: (context) {

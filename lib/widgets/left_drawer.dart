@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/material.dart';
+import 'package:inventory/screens/DaftarItem.dart';
 import 'package:inventory/screens/menu.dart';
 import 'package:inventory/screens/inventory_form.dart';
 
@@ -49,6 +50,17 @@ class LeftDrawer extends StatelessWidget {
                   builder: (context) => MyHomePage(),
                   ));
             },
+          ),
+          ListTile(
+            leading: const Icon(Icons.view_list),
+            title: const Text("Daftar Item"),
+            onTap:(){
+              Navigator.push(
+                context, 
+                MaterialPageRoute(
+                  builder: (context) => const DaftarItem())
+              );
+            }
           ),
           ListTile(
             leading: const Icon(Icons.add_shopping_cart),

@@ -258,3 +258,90 @@ TextFormField, Elemen ini digunakan untuk mengumpulkan input nama item,harga, da
 
 ### 4. penerapan clean architecture pada aplikasi Flutter
 Penerapan Clean Architecture pada aplikasi Flutter melibatkan pemisahan kode menjadi bagian yang berbeda dengan tanggung jawab yang terpisah. Arsitektur ini bertujuan untuk menghasilkan kode yang mudah dipelihara.
+
+### 5. jelaskan cara implementasi checklist step by step
+
+1. Membuat file inventory_form yang meminta input name, amount, description dan memiliki validator.
+Contoh untuk input nama:
+
+```dart
+Padding(
+  padding: const EdgeInsets.all(8),
+  child: TextFormField(
+    decoration: InputDecoration(
+      hintText: "Nama Item",
+      labelText: "Nama Item",
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(5),
+      ),
+    ),
+    onChanged: (String? value){
+      setState(() {
+        _name = value!;
+      });
+    },
+    validator: (String? value){
+      if(value == null || value.isEmpty){
+        return "Nama tidak boleh kosong!";
+      }
+      return null;
+    }
+  ),
+),
+```
+
+2. Mengarah pengguna ke halaman form ketika tombol "tambah item" ditekan seperti ini:
+
+```dart
+if(item.name == "Tambah Item"){
+  Navigator.push(context,
+  MaterialPageRoute(builder: (context) => const InventoryFormPage()));
+}
+```
+
+3. Memunculkan data dalam sebuah pop-up ketika save ditekan:
+
+```dart
+showDialog(
+  context: context,
+  builder: (context) {
+    return AlertDialog(
+      title: const Text("Item berhasil disimpan"),
+      content: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Text('Nama: $_name'),
+            Text('Harga: $_price'),
+            Text('Deskripsi: $_description'),
+          ],
+        )
+      ),
+      actions: [
+        TextButton(
+          child: const Text('OK'),
+          onPressed: () {
+            Navigator.pop(context);
+          }, 
+        )
+      ],
+    );
+  },
+);
+```
+membuat drawer yang dapat mengarah ke halaman utama, daftar produk, dantambah item.
+Contoh untuk yang halaman utama:
+
+```dart
+ListTile(
+  leading: const Icon(Icons.home_outlined),
+  title: const Text("Halaman utama"),
+  onTap: () {
+    Navigator.pushReplacement(
+      context, 
+      MaterialPageRoute(
+        builder: (context) => MyHomePage(),
+        ));
+  },
+),
+```
