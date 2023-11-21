@@ -345,3 +345,49 @@ ListTile(
   },
 ),
 ```
+
+# Tugas 8
+
+## pertanyaan
+
+### 1. Apakah bisa kita melakukan pengambilan data JSON tanpa membuat model terlebih dahulu?
+
+Bisa, tapi lebih baik jika pakai model karena akan lebih terstruktur dan mempermudah pemeliharaan code.
+
+## 2. Jelaskan fungsi dari CookieRequest  
+
+Untuk autentikasi agar cookie dan session dapat dikelola dengan baik. Instance perlu dibagikan ke semua komponen agar semua komponen aplikasi menggunakan sesi yang sama untuk berkomunikasi dengan backend, juga agar lebih konsisten, aman , dan efisien sehingga memudahkan pengembangan dan pemeliharaan aplikasi.
+
+## 3.  Jelaskan mekanisme pengambilan data dari JSON hingga dapat ditampilkan pada Flutter.
+
+- Mengirim permintaan http ke server dan menerika respons JSON
+
+- mengubah respons JSON menjadi objek dart atau model data
+
+- menampilkan informasi data pada UI flutter
+
+## 4. Jelaskan mekanisme autentikasi dari input data akun pada Flutter ke Django
+
+- memasukkan data seperti username dan password pada form login pada flutter.
+
+- mengirim data tersebut ke backend django ke endpointnya menerima request login. 
+
+- Django menerima data login dan mengautentikasikan pengguna dan mengirimkan respons ke flutter 
+
+- Flutter kemudian mengecek respon yang dikirimkan dari django
+
+### 5. Sebutkan seluruh widget yang kamu pakai pada tugas ini dan jelaskan fungsinya masing-masing.
+
+1. Textfield: Input text
+
+2. ElevatedButton: button dengan tampilan elevated yg dapat bereaksi ketika di tekan
+
+3. Column : mengatur child secara vertical 
+
+4. Sizedbox: dapat digunakan untuk memberikan jarak antar widget
+
+5.  CircularProgressIndicator: Menampilkan indikator loading sirkuler, biasanya digunakan saat menunggu data dimuat.
+
+6. ListView.builder: membuat daftar item scrollable yang dibangun secara dinamis. Digunakan untuk menampilkan daftar produk/item.
+
+7. Provider : Paket manajemen state yang digunakan untuk mengelola data di berbagai bagian aplikasi.
