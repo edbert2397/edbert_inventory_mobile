@@ -391,3 +391,295 @@ Untuk autentikasi agar cookie dan session dapat dikelola dengan baik. Instance p
 6. ListView.builder: membuat daftar item scrollable yang dibangun secara dinamis. Digunakan untuk menampilkan daftar produk/item.
 
 7. Provider : Paket manajemen state yang digunakan untuk mengelola data di berbagai bagian aplikasi.
+
+### step by step
+
+1. membuat halaman login
+
+```dart
+import 'package:inventory/screens/menu.dart';
+import 'package:flutter/material.dart';
+import 'package:inventory/screens/register.dart';
+import 'package:pbp_django_auth/pbp_django_auth.dart';
+import 'package:provider/provider.dart';
+
+void main() {
+    runApp(const LoginApp());
+}
+
+class LoginApp extends StatelessWidget {
+const LoginApp({super.key});
+
+@override
+Widget build(BuildContext context) {
+    return MaterialApp(
+        title: 'Login',
+        theme: ThemeData(
+            primarySwatch: Colors.blue,
+    ),
+    home: const LoginPage(),
+    );
+    }
+}
+
+class LoginPage extends StatefulWidget {
+    const LoginPage({super.key});
+
+    @override
+    _LoginPageState createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
+    final TextEditingController _usernameController = TextEditingController();
+    final TextEditingController _passwordController = TextEditingController();
+
+    @override
+    Widget build(BuildContext context) {
+        final request = context.watch<CookieRequest>();
+        return Scaffold(
+            appBar: AppBar(
+                title: const Text('Login'),
+            ),
+            body: Container(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                        TextField(
+                            controller: _usernameController,
+                            decoration: const InputDecoration(
+                                labelText: 'Username',
+                            ),
+                        ),
+                        const SizedBox(height: 12.0),
+                        TextField(
+                            controller: _passwordController,
+                            decoration: const InputDecoration(
+                                labelText: 'Password',
+                            ),
+                            obscureText: true,
+                        ),
+                        const SizedBox(height: 24.0),
+                        ElevatedButton(
+                            onPressed: () async {
+                                String username = _usernameController.text;
+                                String password = _passwordController.text;
+
+                                // Cek kredensial
+                                // TODO: Ganti URL dan jangan lupa tambahkan trailing slash (/) di akhir URL!
+                                // Untuk menyambungkan Android emulator dengan Django pada localhost,
+                                // gunakan URL http://10.0.2.2/
+                                final response = await request.login("http://127.0.0.1:8000/auth/login/", {
+                                'username': username,
+                                'password': password,
+                                });
+                    
+                                if (request.loggedIn) {
+                                    String message = response['message'];
+                                    String uname = response['username'];
+                                    Navigator.pushReplacement(
+                                        context,
+                                        MaterialPageRoute(builder: (context) => MyHomePage()),
+                                    );
+                                    ScaffoldMessenger.of(context)
+                                        ..hideCurrentSnackBar()
+                                        ..showSnackBar(
+                                            SnackBar(content: Text("$message Selamat datang, $uname.")));
+                                    } else {
+                                    showDialog(
+                                        context: context,
+                                        builder: (context) => AlertDialog(
+                                            title: const Text('Login Gagal'),
+                                            content:
+                                                Text(response['message']),
+                                            actions: [
+                                                TextButton(
+                                                    child: const Text('OK'),
+                                                    onPressed: () {
+                                                        Navigator.pop(context);
+                                                    },
+                                                ),
+                                            ],
+                                        ),
+                                    );
+                                }
+                            },
+                            child: const Text('Login'),
+                        ),
+                        ElevatedButton(
+                          onPressed:() {
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(builder: (context) => RegisterPage()),
+                            );
+                          }, 
+                          child: Text("wanna register?"))
+                    ],
+                ),
+            ),
+        );
+    }
+}
+```
+
+2. membuat file khusus untuk class model nya.
+item.dart:
+
+```dart
+// To parse this JSON data, do
+//
+//     final item = itemFromJson(jsonString);
+
+import 'dart:convert';
+
+List<Item> itemFromJson(String str) => List<Item>.from(json.decode(str).map((x) => Item.fromJson(x)));
+
+String itemToJson(List<Item> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
+
+class Item {
+    String model;
+    int pk;
+    Fields fields;
+
+    Item({
+        required this.model,
+        required this.pk,
+        required this.fields,
+    });
+
+    factory Item.fromJson(Map<String, dynamic> json) => Item(
+        model: json["model"],
+        pk: json["pk"],
+        fields: Fields.fromJson(json["fields"]),
+    );
+
+
+    Map<String, dynamic> toJson() => {
+        "model": model,
+        "pk": pk,
+        "fields": fields.toJson(),
+    };
+}
+
+class Fields {
+    String name;
+    DateTime dateAdded;
+    int amount;
+    String description;
+    int user;
+
+    Fields({
+        required this.name,
+        required this.dateAdded,
+        required this.amount,
+        required this.description,
+        required this.user,
+    });
+
+    factory Fields.fromJson(Map<String, dynamic> json) => Fields(
+        name: json["name"],
+        dateAdded: DateTime.parse(json["date_added"]),
+        amount: json["amount"],
+        description: json["description"],
+        user: json["user"],
+    );
+
+    Map<String, dynamic> toJson() => {
+        "name": name,
+        "date_added": "${dateAdded.year.toString().padLeft(4, '0')}-${dateAdded.month.toString().padLeft(2, '0')}-${dateAdded.day.toString().padLeft(2, '0')}",
+        "amount": amount,
+        "description": description,
+        "user": user,
+    };
+}
+```
+
+3. membuat halaman yang berisi daftar semua item:
+```dart
+body: FutureBuilder(
+  future: fetchProduct(),
+  builder: (context, AsyncSnapshot snapshot) {
+      if (snapshot.data == null) {
+          return const Center(child: CircularProgressIndicator());
+      } else {
+          if (!snapshot.hasData) {
+          return const Column(
+              children: [
+              Text(
+                  "Tidak ada data produk.",
+                  style:
+                      TextStyle(color: Color(0xff59A5D8), fontSize: 20),
+              ),
+              SizedBox(height: 8),
+              ],
+          );
+      } else {
+          return ListView.builder(
+            itemCount: snapshot.data!.length,
+            itemBuilder: (_, index) {
+              // if(snapshot.data![index].fields.name == currentUser){
+
+              // }
+              return GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ItemDetailPage(item: snapshot.data![index]),
+                    ),
+                  );
+                },
+                child: Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  padding: const EdgeInsets.all(20.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "${snapshot.data![index].fields.name}",
+                        style: const TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+                      ),
+                      const SizedBox(height: 10),
+                      Text("${snapshot.data![index].fields.amount}"),
+                      const SizedBox(height: 10),
+                      Text("${snapshot.data![index].fields.description}"),
+                    ],
+                  ),
+                ),
+              );
+            },
+          );
+
+        }
+      }
+  });
+```
+
+5. Membuat halaman detail untuk setiap item yang terdapat pada halaman daftar Item.
+
+```dart
+Widget build(BuildContext context) {
+    return Scaffold(
+      body: Center(
+        child:Padding(
+          padding: EdgeInsets.all(16),
+          child:Column(
+            
+            children: [
+              Text('Name: ${item.fields.name}', style: TextStyle(fontSize: 20)),
+              Text('Amount: ${item.fields.amount}', style: TextStyle(fontSize: 18)),
+              Text('Description: ${item.fields.description}', style: TextStyle(fontSize: 16)),
+              SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: () => Navigator.pop(context),
+                child: Text('Back to List'),
+              ),
+            ],
+          )
+
+        )
+      ),
+    );
+  }
+```
